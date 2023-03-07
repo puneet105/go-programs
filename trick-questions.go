@@ -196,3 +196,50 @@ func g(i int) {
 }
 
  */
+
+/*
+package main
+
+import "fmt"
+
+const N = 4
+
+func main(){
+	m := make(map[int]*int)
+	for i:=1;i<=N;i++{
+		m[i]=&i
+		fmt.Println(&i)
+	}
+
+	for key, value := range m{
+		fmt.Println(key,*value)
+	}
+
+	//fmt.Println(m)
+}
+*/
+
+/*
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	s1 := []int{10, 20, 30, 40, 50}
+	s2 := s1[2:4]        //{30,40}
+	fmt.Println(len(s2)) //2
+	fmt.Println(cap(s2)) //3
+	s2 = append(s2, 60)  //{30,40,60}
+	fmt.Println(len(s2)) //3
+	fmt.Println(cap(s2)) //3
+	//s2 = append(s2, 70)  //{30,40,60,70} len-4 cap-6
+	fmt.Println(s1) //{}
+	fmt.Println(s2) //{30,40,60}
+}
+*/
+
+/*
+
+*/
