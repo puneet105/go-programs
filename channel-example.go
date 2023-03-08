@@ -1,46 +1,90 @@
-//Go Program to print odd and even number using go routines and channel
 package main
 
 import (
 	"fmt"
-	"runtime"
 	"sync"
 )
 
-func oddFunc(ch chan int, wg *sync.WaitGroup) {
-	runtime.Gosched()
-	for x := range ch {
-		fmt.Println("Odd Number is", x)
+func PrintEven(wg *sync.WaitGroup, done chan bool) {
+	defer wg.Done()
+	for i:=0;i<20;i++{
+		if i%2 == 0{
+			fmt.Printf("EVEN:%d ",i)
+
+		}
+		done<-true
 	}
+	close(done)
 }
 
-func evenFunc(ch chan int, wg *sync.WaitGroup) {
-	for x := range ch {
-		fmt.Println("Even number is", x)
+func PrintOdd(wg *sync.WaitGroup,  done chan bool) {
+	defer wg.Done()
+	for i:=0;i<20;i++{
+		<-done
+		if i%2 != 0{
+			fmt.Printf("ODD:%d ",i)
+		}
 	}
 
-	close(ch)
 }
 
 func main() {
-	var numbers = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-
-	oddChan := make(chan int)
-	evenChan := make(chan int)
 	var wg sync.WaitGroup
+	done := make(chan bool)
 	wg.Add(2)
-	go oddFunc(oddChan, &wg)
-	go evenFunc(evenChan, &wg)
-	for _, val := range numbers {
-		if val%2 != 0 {
-			oddChan <- val
-		} else {
-			evenChan <- val
-		}
-	}
-	close(oddChan)
-	close(evenChan)
-	wg.Done()
-	wg.Done()
+	go PrintEven(&wg,done)
+	go PrintOdd( &wg,done)
 	wg.Wait()
 }
+
+/*package main
+
+import (
+	"fmt"
+	"sync"
+	"sync/atomic"
+)
+
+func main() {
+	var done int32
+	syncChannel := make(chan bool) // unbuffered channel.
+
+	wg := new(sync.WaitGroup)
+	wg.Add(2)
+
+	go func() {
+		// prints even numbers.
+		defer wg.Done()
+
+		for i := 0; i < 50; i += 2 {
+			<-syncChannel
+
+			fmt.Printf("Even: %d\n", i)
+
+			syncChannel <- true
+		}
+		atomic.StoreInt32(&done, 1)
+	}()
+
+	syncChannel <- true
+
+	go func() {
+		// prints odd numbers.
+		defer wg.Done()
+
+		for i := 1; i < 50; i += 2 {
+			<-syncChannel
+
+			fmt.Printf("Odd:%d\n", i)
+
+			if atomic.LoadInt32(&done) != 0 {
+				return
+			}
+
+			syncChannel <- true
+		}
+	}()
+
+	wg.Wait()
+	close(syncChannel)
+}*/
