@@ -17,3 +17,25 @@ func main(){
 	fmt.Println(words)
 }
 
+//ANOTHER WAY
+
+package main
+
+import (
+    "fmt"
+    // "strconv"
+)
+
+func main (){
+    str := "PUNEETSHARMA"
+    lenght := len(str)
+    final := []rune(str)
+    fmt.Println("lenght is : ", lenght)
+    for i:=0; i<lenght/2; i++{
+        final[i], final[lenght-1-i] = final[lenght-1-i], final[i]
+        
+    }
+
+    fmt.Println(string(final))
+}
+
